@@ -3,9 +3,9 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"log"
 	"os"
 	"strconv"
+	"strings"
 )
 
 func main() {
@@ -19,74 +19,37 @@ func main() {
 	//Don't forget to close the file
 	defer file.Close()
 
-	// Create slices of type string to store the values for later manipulation
-	text := []string{}
-	direction := []string{}
-	num_text := []string{}
-
-	//  Create struct for storing data of different types together
-	//type submarine struct {
-	//	position string
-	//	depth int
-	//}
-
-	// Create slice of type int to convert from num_text
-	num := []int{}
+	//variable declaration
+	var pos, depth, aim, num int
+	var direction string
 
 	// read the file line by line
 	scanner := bufio.NewScanner(file)
-	scanner.Split(bufio.ScanWords)
-
-	// For loop which iterates through each item in the Scanner text and breaks down each word in the line
 	for scanner.Scan() {
-		text = append(text, scanner.Text())
-		if err != nil {
-			log.Fatal("Scanner be dead", err)
+		// read in each line while there are still lines to be read
+		text := strings.Fields(scanner.Text())
+
+		//put the first field into the direction variable
+		direction = text[0]
+
+		//convert string to int & put value into num variable
+		num, err = strconv.Atoi(text[1])
+
+		// perform our program logic
+
+		if direction == "forward" {
+			pos += num
+			depth += aim * num
+		} else if direction == "up" {
+			aim -= num
+		} else if direction == "down" {
+			aim += num
 		}
-	}
-	//Separate the direction and the number values into their own respective string slices
-	for i, v := range text {
-		if i%2 == 0 {
-			direction = append(direction, v)
-		} else {
-			num_text = append(num_text, v)
-		}
+		// testing output
+		//fmt.Println("direction: ", direction)
+		//fmt.Println("position: ", num)
 	}
 
-	// print the direction & num to the stdout
-	//fmt.Println("The direction is: ", direction)
-	//fmt.Println("The number of steps is: ", num_text)
-
-	//Convert existing num_text slice into a slice of type int
-
-	for _, n := range num_text {
-
-		tmp, err := strconv.Atoi(n)
-		if err != nil {
-			log.Fatal("Scanner be dead", err)
-		}
-		num = append(num, tmp)
-	}
-	// Test printing the slice of type num
-	//fmt.Println(num)
-
-	// Calculate the position & depth by iterating through the for loop and adding up the appropriate values
-	pos := 0
-	depth := 0
-	aim := 0
-
-	for a := 0; a < len(direction); a++ {
-		if direction[a] == "forward" {
-			pos = pos + num[a]
-			depth = depth + (aim * num[a])
-		} else if direction[a] == "up" {
-			aim = aim - num[a]
-			//depth = depth - num[a]
-		} else if direction[a] == "down" {
-			aim = aim + num[a]
-			//depth = depth + num[a]
-		}
-	}
 	// Test printing out final result
 	fmt.Println("Final position is: ", pos)
 	fmt.Println("Final depth is: ", depth)
@@ -94,5 +57,4 @@ func main() {
 	// Calculate the final answer
 	answer := pos * depth
 	fmt.Println("Final answer is position times depth: ", answer)
-
 }
